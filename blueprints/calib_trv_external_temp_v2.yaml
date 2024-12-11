@@ -1,5 +1,5 @@
 blueprint:
-  name: Calibrate Sonoff TRV external temperature
+  name: Calibrate Sonoff TRV external temperature with decimal input
   description: Calibrate Sonoff TRVZB internal temperature according to external temperature sensor with decimal approximation
   domain: automation
   input:
