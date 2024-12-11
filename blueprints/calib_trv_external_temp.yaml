@@ -40,7 +40,7 @@ blueprint:
           max: 2
           step: 0.1
   source_url: https://github.com/kvanbiesen/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp.yaml
-alias: Calibrate Moes TRVs
+alias: Calibrate Sonoff TRVZBs
 description: ''
 variables:
   climate_names: !input climate_names
