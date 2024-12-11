@@ -39,7 +39,7 @@ blueprint:
           min: 0
           max: 2
           step: 0.1
-  source_url: https://github.com/kvanbiesen/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp.yaml
+  source_url: https://github.com/kvanbiesen/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp_v2.yaml
 alias: Calibrate Sonoff TRVZBs
 description: ''
 variables:
