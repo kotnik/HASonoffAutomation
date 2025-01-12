@@ -32,6 +32,14 @@ blueprint:
           min: 0
           max: 2
           step: 0.1
+    time_delay:
+      name: Time Between Syncs
+      description: Delay between updates precenting from trvs updating to quick (0 to disable)
+      selector:
+        number:
+          min: 0
+          max: 15
+          step: 0.5
   source_url: https://github.com/kvanbiesen/HASonoffAutomation/calib_trv_external_temp.yaml
 alias: Calibrate Sonoff TRVs
 description: ''
@@ -39,6 +47,7 @@ variables:
   climate_names: !input climate_names
   external_temperature: !input external_temp
   offset_factor: !input offset_factor
+  time_delay: !input time_delay
 trigger:
 - platform: state
   entity_id: !input external_temp
@@ -61,6 +70,8 @@ condition:
     value_template: '{{ states(external_temperature) != ''unavailable'' }}'
   - condition: template
     value_template: '{{ states(external_temperature) != ''unknown'' }}'
+  - condition: template # only notify once every 10 minutes at most
+    value_template: "{{ ( as_timestamp(now()) - as_timestamp(state_attr(this.entity_id, 'last_triggered')) |int(0) ) > time_delay*60 }}"  
 action:
 - repeat:
     for_each: "{{ climate_names }}"
