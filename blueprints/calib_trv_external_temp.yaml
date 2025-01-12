@@ -71,7 +71,7 @@ condition:
   - condition: template
     value_template: '{{ states(external_temperature) != ''unknown'' }}'
   - condition: template # only notify once every 10 minutes at most
-    value_template: "{{ ( as_timestamp(now()) - as_timestamp(state_attr(this.entity_id, 'last_triggered')) |int(0) ) > time_delay*60 }}"  
+    value_template: '{{ ( as_timestamp(now()) - as_timestamp(state_attr(this.entity_id, ''last_triggered'')) |int(0) ) > time_delay * 60 }}'
 action:
 - repeat:
     for_each: "{{ climate_names }}"
