@@ -59,7 +59,8 @@ action:
         actual_calib: "{{ states(device_calib) | float() }}"
         external_temp: "{{ states(external_temperature) | float() }}"
         local_temp: "{{ state_attr(climate_name, 'current_temperature') | float() }}"
-        target_calib: "{{ external_temp - (local_temp - actual_calib) }}"
+        real_device_temp: "{{ local_temp + actual_calib }}"
+        target_calib: "{{ external_temp - real_device_temp }}"
         target_calib_round: "{{ target_calib | round() }}"
         target_calib_trunc: "{{ [ ([target_calib_round, 9] | min), -9 ] | max }}"
 
