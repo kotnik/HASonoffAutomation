@@ -82,7 +82,7 @@ action:
     sequence:
     - variables:
         climate_name: "{{ repeat.item }}"
-        device_calib: "number.{{ climate_name.removeprefix('climate.') }}_local_temperature_calibration"
+        device_calib: "number.{{ climate_name.removeprefix('climate.') }}_local_temperature_offset"
         external_temp: "{{ states(external_temperature) | float() }}"
         local_temp: "{{ state_attr(climate_name, 'current_temperature') | float() }}"
         target_temp_decimal: "{{ states(target_decimal_offset) | float() }}"
