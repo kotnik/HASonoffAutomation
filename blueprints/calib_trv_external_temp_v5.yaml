@@ -21,7 +21,7 @@ blueprint:
           domain:
           - climate
           multiple: true
-  source_url: https://github.com/kotnik/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp_v4.yaml
+  source_url: https://github.com/kotnik/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp_v5.yaml
 alias: Calibrate Sonoff TRVZBs
 description: ''
 variables:
@@ -58,8 +58,8 @@ action:
         device_calib: "number.{{ climate_name.removeprefix('climate.').removesuffix('_thermostat') }}_local_temperature_offset"
         actual_calib: "{{ states(device_calib) | float() }}"
         external_temp: "{{ states(external_temperature) | float() }}"
-        local_temp: "{{ state_attr(climate_name, 'current_temperature') | float() }}"
-        real_device_temp: "{{ local_temp - actual_calib }}"
+        device_temp: "{{ state_attr(climate_name, 'current_temperature') | float() }}"
+        real_device_temp: "{{ device_temp - actual_calib }}"
         target_calib: "{{ external_temp - real_device_temp }}"
         target_calib_round: "{{ target_calib | round() }}"
         target_calib_trunc: "{{ [ ([target_calib_round, 9] | min), -9 ] | max }}"
