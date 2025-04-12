@@ -21,39 +21,26 @@ blueprint:
           domain:
           - climate
           multiple: true
-
-    offset_factor:
-      name: Calibration Offset Factor
-      description: |
-        Adds weighted diff in actual and target temperature.
-        will add following formula to calibration: offset_factor * (actual_temp - target_temp)
-        0 = no offset
-      selector:
-        number:
-          min: 0
-          max: 2
-          step: 0.1
-  source_url: https://github.com/kvanbiesen/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp_v2.yaml
+  source_url: https://github.com/kotnik/HASonoffAutomation/blob/main/blueprints/calib_trv_external_temp_v4.yaml
 alias: Calibrate Sonoff TRVZBs
 description: ''
 variables:
   climate_names: !input climate_names
   external_temperature: !input external_temp
-  offset_factor: !input offset_factor
 trigger:
 - platform: state
   entity_id: !input external_temp
   for:
     hours: 0
-    minutes: 0
-    seconds: 15
+    minutes: 1
+    seconds: 0
     milliseconds: 0
 - platform: state
   entity_id: !input climate_names
   for:
     hours: 0
-    minutes: 0
-    seconds: 15
+    minutes: 1
+    seconds: 0
     milliseconds: 0
 condition:
   condition: and
@@ -69,18 +56,16 @@ action:
     - variables:
         climate_name: "{{ repeat.item }}"
         device_calib: "number.{{ climate_name.removeprefix('climate.').removesuffix('_thermostat') }}_local_temperature_offset"
+        actual_calib: "{{ states(device_calib) | float() }}"
         external_temp: "{{ states(external_temperature) | float() }}"
         local_temp: "{{ state_attr(climate_name, 'current_temperature') | float() }}"
-        actual_calib: "{{ states(device_calib) | float() }}"
-        temp_diff: "{{ external_temp - local_temp }}"
-        calibration_offset: "{{ temp_diff * offset_factor }}"
-        target_calib: "{{ external_temp - (local_temp - actual_calib) + calibration_offset }}"
+        target_calib: "{{ external_temp - (local_temp + actual_calib) }}"
         target_calib_round: "{{ target_calib | round() }}"
         target_calib_trunc: "{{ [ ([target_calib_round, 9] | min), -9 ] | max }}"
 
     - alias: "check if calibration needs change"
       condition: template
-      value_template: "{{ (actual_calib | round()) != target_calib_trunc }}"
+      value_template: "{{ actual_calib != target_calib_trunc }}"
       
     - service: number.set_value
       target:
