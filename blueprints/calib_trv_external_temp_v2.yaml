@@ -39,7 +39,6 @@ description: ''
 variables:
   climate_names: !input climate_names
   external_temperature: !input external_temp
-  target_decimal_offset: !input target_decimal_offset
   offset_factor: !input offset_factor
 trigger:
 - platform: state
