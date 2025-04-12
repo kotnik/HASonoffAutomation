@@ -21,12 +21,6 @@ blueprint:
           domain:
           - climate
           multiple: true
-    target_decimal_offset:
-      name: Number helper entity defining target temperature decimal offset
-      selector:
-        entity:
-          filter:
-            domain: input_number
 
     offset_factor:
       name: Calibration Offset Factor
@@ -62,13 +56,6 @@ trigger:
     minutes: 0
     seconds: 15
     milliseconds: 0
-- platform: state
-  entity_id: !input target_decimal_offset
-  for:
-    hours: 0
-    minutes: 0
-    seconds: 15
-    milliseconds: 0
 condition:
   condition: and
   conditions:
@@ -85,10 +72,8 @@ action:
         device_calib: "number.{{ climate_name.removeprefix('climate.').removesuffix('_thermostat') }}_local_temperature_offset"
         external_temp: "{{ states(external_temperature) | float() }}"
         local_temp: "{{ state_attr(climate_name, 'current_temperature') | float() }}"
-        target_temp_decimal: "{{ states(target_decimal_offset) | float() }}"
-        target_temp: "{{ target_temp_decimal + state_attr(climate_name, 'temperature') | float() }}"
         actual_calib: "{{ states(device_calib) | float() }}"
-        temp_diff: "{{ external_temp - target_temp }}"
+        temp_diff: "{{ external_temp - local_temp }}"
         calibration_offset: "{{ temp_diff * offset_factor }}"
         target_calib: "{{ external_temp - (local_temp - actual_calib) + calibration_offset }}"
         target_calib_round: "{{ target_calib | round() }}"
